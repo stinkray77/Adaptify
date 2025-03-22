@@ -2,22 +2,22 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertWaitlistSchema } from "@shared/schema";
+import { insertWaitlistSchema, insertBuddyMetricsSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
-  
+
   // API error handler helper
   function handleErrors(res: any, error: unknown) {
     console.error('API error:', error);
-    
+
     if (error instanceof ZodError) {
       const validationError = fromZodError(error);
       return res.status(400).json({ error: validationError.message });
     }
-    
+
     return res.status(500).json({ error: 'An unexpected error occurred' });
   }
 
@@ -31,7 +31,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return handleErrors(res, error);
     }
   });
-  
+
   app.get('/api/waitlist', async (req, res) => {
     try {
       const subscribers = await storage.getWaitlistSubscribers();
@@ -50,19 +50,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return handleErrors(res, error);
     }
   });
-  
+
   app.get('/api/departments/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ error: 'Invalid department ID' });
       }
-      
+
       const department = await storage.getDepartmentById(id);
       if (!department) {
         return res.status(404).json({ error: 'Department not found' });
       }
-      
+
       return res.json(department);
     } catch (error) {
       return handleErrors(res, error);
@@ -78,19 +78,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return handleErrors(res, error);
     }
   });
-  
+
   app.get('/api/technologies/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ error: 'Invalid technology ID' });
       }
-      
+
       const technology = await storage.getTechnologyById(id);
       if (!technology) {
         return res.status(404).json({ error: 'Technology not found' });
       }
-      
+
       return res.json(technology);
     } catch (error) {
       return handleErrors(res, error);
@@ -101,35 +101,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/employees', async (req, res) => {
     try {
       const departmentId = req.query.departmentId ? parseInt(req.query.departmentId as string) : undefined;
-      
+
       if (departmentId !== undefined) {
         if (isNaN(departmentId)) {
           return res.status(400).json({ error: 'Invalid department ID' });
         }
-        
+
         const employees = await storage.getEmployeesByDepartment(departmentId);
         return res.json(employees);
       }
-      
+
       const employees = await storage.getEmployees();
       return res.json(employees);
     } catch (error) {
       return handleErrors(res, error);
     }
   });
-  
+
   app.get('/api/employees/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ error: 'Invalid employee ID' });
       }
-      
+
       const employee = await storage.getEmployeeById(id);
       if (!employee) {
         return res.status(404).json({ error: 'Employee not found' });
       }
-      
+
       return res.json(employee);
     } catch (error) {
       return handleErrors(res, error);
@@ -142,34 +142,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const employeeId = req.query.employeeId ? parseInt(req.query.employeeId as string) : undefined;
       const technologyId = req.query.technologyId ? parseInt(req.query.technologyId as string) : undefined;
       const departmentId = req.query.departmentId ? parseInt(req.query.departmentId as string) : undefined;
-      
+
       if (employeeId !== undefined) {
         if (isNaN(employeeId)) {
           return res.status(400).json({ error: 'Invalid employee ID' });
         }
-        
+
         const activities = await storage.getUserActivitiesByEmployee(employeeId);
         return res.json(activities);
       }
-      
+
       if (technologyId !== undefined) {
         if (isNaN(technologyId)) {
           return res.status(400).json({ error: 'Invalid technology ID' });
         }
-        
+
         const activities = await storage.getUserActivitiesByTechnology(technologyId);
         return res.json(activities);
       }
-      
+
       if (departmentId !== undefined) {
         if (isNaN(departmentId)) {
           return res.status(400).json({ error: 'Invalid department ID' });
         }
-        
+
         const activities = await storage.getUserActivitiesByDepartment(departmentId);
         return res.json(activities);
       }
-      
+
       const activities = await storage.getUserActivities();
       return res.json(activities);
     } catch (error) {
@@ -181,35 +181,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/recommendations', async (req, res) => {
     try {
       const employeeId = req.query.employeeId ? parseInt(req.query.employeeId as string) : undefined;
-      
+
       if (employeeId !== undefined) {
         if (isNaN(employeeId)) {
           return res.status(400).json({ error: 'Invalid employee ID' });
         }
-        
+
         const recommendations = await storage.getTrainingRecommendationsByEmployee(employeeId);
         return res.json(recommendations);
       }
-      
+
       const recommendations = await storage.getTrainingRecommendations();
       return res.json(recommendations);
     } catch (error) {
       return handleErrors(res, error);
     }
   });
-  
+
   app.patch('/api/recommendations/:id/complete', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ error: 'Invalid recommendation ID' });
       }
-      
+
       const recommendation = await storage.completeTrainingRecommendation(id);
       if (!recommendation) {
         return res.status(404).json({ error: 'Recommendation not found' });
       }
-      
+
       return res.json(recommendation);
     } catch (error) {
       return handleErrors(res, error);
@@ -221,25 +221,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const departmentId = req.query.departmentId ? parseInt(req.query.departmentId as string) : undefined;
       const technologyId = req.query.technologyId ? parseInt(req.query.technologyId as string) : undefined;
-      
+
       if (departmentId !== undefined) {
         if (isNaN(departmentId)) {
           return res.status(400).json({ error: 'Invalid department ID' });
         }
-        
+
         const analytics = await storage.getAnalyticsDataByDepartment(departmentId);
         return res.json(analytics);
       }
-      
+
       if (technologyId !== undefined) {
         if (isNaN(technologyId)) {
           return res.status(400).json({ error: 'Invalid technology ID' });
         }
-        
+
         const analytics = await storage.getAnalyticsDataByTechnology(technologyId);
         return res.json(analytics);
       }
-      
+
       const analytics = await storage.getAnalyticsData();
       return res.json(analytics);
     } catch (error) {
@@ -266,7 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storage.getTrainingRecommendations(),
         storage.getAnalyticsData()
       ]);
-      
+
       // Calculate adoption rate by technology
       const adoptionByTechnology: Record<string, any> = {};
       for (const tech of technologies) {
@@ -276,7 +276,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           adoptionByTechnology[tech.name] = overallAdoption?.metricValue || { value: 0, unit: "percent", trend: "neutral" };
         }
       }
-      
+
       // Calculate adoption rate by department
       const adoptionByDepartment: Record<string, any> = {};
       for (const dept of departments) {
@@ -290,29 +290,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
           };
         }
       }
-      
+
       // Calculate success rate (successful vs failed activities)
       const successfulActivities = activities.filter(a => a.successful).length;
       const successRate = activities.length > 0 ? (successfulActivities / activities.length) * 100 : 0;
-      
+
       // Calculate feature usage
       const featureUsage: Record<string, number> = {};
       activities.forEach(activity => {
         featureUsage[activity.featureUsed] = (featureUsage[activity.featureUsed] || 0) + activity.usageCount;
       });
-      
+
       // Sort features by usage
       const sortedFeatures = Object.entries(featureUsage)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5)
         .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
-      
+
       // Calculate recommended training by type
       const trainingByType: Record<string, number> = {};
       recommendations.forEach(rec => {
         trainingByType[rec.recommendationType] = (trainingByType[rec.recommendationType] || 0) + 1;
       });
-      
+
       return res.json({
         counts: {
           departments: departments.length,
@@ -357,7 +357,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Get all metrics for analysis
       const metrics = await storage.getBuddyMetrics();
-      
+
       // Group metrics by employee
       const employeeMetrics = new Map();
       metrics.forEach(metric => {
@@ -372,7 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const avgTaskTime = metrics.reduce((sum, m) => sum + m.taskTime, 0) / metrics.length;
         const avgErrors = metrics.reduce((sum, m) => sum + m.errorCount, 0) / metrics.length;
         const avgUrgency = metrics.reduce((sum, m) => sum + m.urgency, 0) / metrics.length;
-        
+
         return {
           employeeId: empId,
           avgTaskTime,
@@ -387,12 +387,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const pairs = [];
       const needsTraining = employeeAverages.filter(e => e.proficiency === 'needs_training')
         .sort((a, b) => b.avgUrgency - a.avgUrgency);
-      
+
       const proficient = employeeAverages.filter(e => e.proficiency === 'proficient');
 
       needsTraining.forEach(mentee => {
         // Find a suitable mentor with matching task types
-        const mentor = proficient.find(p => 
+        const mentor = proficient.find(p =>
           p.taskTypes.some(t => mentee.taskTypes.includes(t)) &&
           !pairs.some(pair => pair.mentorId === p.employeeId)
         );
@@ -430,6 +430,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return handleErrors(res, error);
     }
   });
+
+  app.get('/api/feedback', async (req, res) => {
+    try {
+      const feedbackData = require('./feedback-data.json');
+      res.json(feedbackData.feedback);
+    } catch (error) {
+      return handleErrors(res, error);
+    }
+  });
+
 
   return httpServer;
 }

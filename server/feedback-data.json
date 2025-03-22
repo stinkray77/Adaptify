@@ -1,0 +1,20 @@
+
+{
+  "feedback": [
+    {
+      "timestamp": "2024-01-15T09:00:00Z",
+      "rating": 4,
+      "feedback": "Great experience!"
+    },
+    {
+      "timestamp": "2024-01-15T10:30:00Z",
+      "rating": 5,
+      "feedback": "Very helpful system"
+    },
+    {
+      "timestamp": "2024-01-15T11:45:00Z",
+      "rating": 3,
+      "feedback": "Could use some improvements"
+    }
+  ]
+}
