@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Spreadsheet Data Histograms</title>
+</head>
+<body>
+  <h1>Visualize Spreadsheet Data as Histograms</h1>
+
+  <!-- 1) File input for CSV -->
+  <input type="file" id="fileInput" accept=".csv" />
+  <button id="parseButton">Parse & Visualize</button>
+
+  <!-- 2) Container where charts will appear -->
+  <div id="chartsContainer"></div>
+
+  <!-- 3) Include Papa Parse (for CSV parsing) and Chart.js (for histograms) from CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- 4) Our main script -->
+  <script src="index.js"></script>
+</body>
+</html>
+
