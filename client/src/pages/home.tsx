@@ -7,6 +7,8 @@ import TestimonialCard from "@/components/testimonial-card";
 import PricingCard from "@/components/pricing-card";
 import { Button } from "@/components/ui/button";
 import { BarChart, GraduationCap, AlertTriangle, PieChart, Lightbulb, Shield } from "lucide-react";
+import BuddySystem from "@/components/buddy-system"; // Import the new component
+
 
 const Home = () => {
   // Scroll to the section if the URL has a hash on initial load
@@ -133,7 +135,7 @@ const Home = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="relative bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -302,6 +304,9 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Buddy System Section */}
+      <BuddySystem/>
+
       {/* Pricing Section */}
       <section id="pricing" className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -372,7 +377,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      
+
       <Footer />
     </div>
   );
