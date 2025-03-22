@@ -11,6 +11,11 @@ import {
 
 // Interface for storage operations
 export interface IStorage {
+  // Buddy System operations
+  addBuddyMetrics(metrics: InsertBuddyMetrics): Promise<BuddyMetrics>;
+  getBuddyMetrics(): Promise<BuddyMetrics[]>;
+  createBuddyPair(mentorId: number, menteeId: number, taskType: string): Promise<BuddyPair>;
+  getBuddyPairs(): Promise<BuddyPair[]>;
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -57,6 +62,10 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
+  private buddyMetrics: Map<number, BuddyMetrics>;
+  private buddyPairs: Map<number, BuddyPair>;
+  private buddyMetricsIdCounter = 1;
+  private buddyPairsIdCounter = 1;
   private users: Map<number, User>;
   private waitlistSubscribers: Map<number, WaitlistSubscriber>;
   private departments: Map<number, Department>;
@@ -79,6 +88,8 @@ export class MemStorage implements IStorage {
   constructor() {
     this.users = new Map();
     this.waitlistSubscribers = new Map();
+    this.buddyMetrics = new Map();
+    this.buddyPairs = new Map();
     this.departments = new Map();
     this.technologies = new Map();
     this.employees = new Map();
@@ -285,6 +296,36 @@ export class MemStorage implements IStorage {
   }
 
   // Initialize sample data for demonstration
+  // Buddy System methods
+  async addBuddyMetrics(metrics: InsertBuddyMetrics): Promise<BuddyMetrics> {
+    const id = this.buddyMetricsIdCounter++;
+    const newMetrics = { ...metrics, id, timestamp: new Date() };
+    this.buddyMetrics.set(id, newMetrics);
+    return newMetrics;
+  }
+
+  async getBuddyMetrics(): Promise<BuddyMetrics[]> {
+    return Array.from(this.buddyMetrics.values());
+  }
+
+  async createBuddyPair(mentorId: number, menteeId: number, taskType: string): Promise<BuddyPair> {
+    const id = this.buddyPairsIdCounter++;
+    const pair = { 
+      id, 
+      mentorId, 
+      menteeId, 
+      taskType,
+      createdAt: new Date(),
+      status: "active" 
+    };
+    this.buddyPairs.set(id, pair);
+    return pair;
+  }
+
+  async getBuddyPairs(): Promise<BuddyPair[]> {
+    return Array.from(this.buddyPairs.values());
+  }
+
   private async initSampleData() {
     // Sample departments
     const departments = [

@@ -140,3 +140,37 @@ export const insertAnalyticsDataSchema = createInsertSchema(analyticsData).pick(
 
 export type InsertAnalyticsData = z.infer<typeof insertAnalyticsDataSchema>;
 export type AnalyticsData = typeof analyticsData.$inferSelect;
+
+// Buddy system tables
+export const buddyPairs = pgTable("buddy_pairs", {
+  id: serial("id").primaryKey(),
+  mentorId: integer("mentor_id").notNull(),
+  menteeId: integer("mentee_id").notNull(),
+  taskType: text("task_type").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  status: text("status").notNull().default("active"), // active, completed, canceled
+});
+
+export const buddyMetrics = pgTable("buddy_metrics", {
+  id: serial("id").primaryKey(),
+  employeeId: integer("employee_id").notNull(),
+  taskTime: integer("task_time").notNull(),
+  errorCount: integer("error_count").notNull(),
+  sentiment: text("sentiment").notNull(),
+  taskType: text("task_type").notNull(),
+  urgency: integer("urgency").notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export const insertBuddyMetricsSchema = createInsertSchema(buddyMetrics).pick({
+  employeeId: true,
+  taskTime: true,
+  errorCount: true,
+  sentiment: true,
+  taskType: true,
+  urgency: true,
+});
+
+export type InsertBuddyMetrics = z.infer<typeof insertBuddyMetricsSchema>;
+export type BuddyMetrics = typeof buddyMetrics.$inferSelect;
+export type BuddyPair = typeof buddyPairs.$inferSelect;

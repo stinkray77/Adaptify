@@ -342,5 +342,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Buddy System API routes
+  app.post('/api/buddy-metrics', async (req, res) => {
+    try {
+      const data = insertBuddyMetricsSchema.parse(req.body);
+      const metrics = await storage.addBuddyMetrics(data);
+      return res.status(201).json(metrics);
+    } catch (error) {
+      return handleErrors(res, error);
+    }
+  });
+
+  app.get('/api/buddy-pairs/suggested', async (req, res) => {
+    try {
+      // Get all metrics for analysis
+      const metrics = await storage.getBuddyMetrics();
+      
+      // Group metrics by employee
+      const employeeMetrics = new Map();
+      metrics.forEach(metric => {
+        if (!employeeMetrics.has(metric.employeeId)) {
+          employeeMetrics.set(metric.employeeId, []);
+        }
+        employeeMetrics.get(metric.employeeId).push(metric);
+      });
+
+      // Calculate average metrics per employee
+      const employeeAverages = Array.from(employeeMetrics.entries()).map(([empId, metrics]) => {
+        const avgTaskTime = metrics.reduce((sum, m) => sum + m.taskTime, 0) / metrics.length;
+        const avgErrors = metrics.reduce((sum, m) => sum + m.errorCount, 0) / metrics.length;
+        const avgUrgency = metrics.reduce((sum, m) => sum + m.urgency, 0) / metrics.length;
+        
+        return {
+          employeeId: empId,
+          avgTaskTime,
+          avgErrors,
+          avgUrgency,
+          taskTypes: [...new Set(metrics.map(m => m.taskType))],
+          proficiency: avgTaskTime < 40 && avgErrors < 2 ? 'proficient' : 'needs_training'
+        };
+      });
+
+      // Generate buddy pairs
+      const pairs = [];
+      const needsTraining = employeeAverages.filter(e => e.proficiency === 'needs_training')
+        .sort((a, b) => b.avgUrgency - a.avgUrgency);
+      
+      const proficient = employeeAverages.filter(e => e.proficiency === 'proficient');
+
+      needsTraining.forEach(mentee => {
+        // Find a suitable mentor with matching task types
+        const mentor = proficient.find(p => 
+          p.taskTypes.some(t => mentee.taskTypes.includes(t)) &&
+          !pairs.some(pair => pair.mentorId === p.employeeId)
+        );
+
+        if (mentor) {
+          pairs.push({
+            menteeId: mentee.employeeId,
+            mentorId: mentor.employeeId,
+            taskType: mentor.taskTypes.find(t => mentee.taskTypes.includes(t))
+          });
+        }
+      });
+
+      return res.json(pairs);
+    } catch (error) {
+      return handleErrors(res, error);
+    }
+  });
+
+  app.post('/api/buddy-pairs', async (req, res) => {
+    try {
+      const { mentorId, menteeId, taskType } = req.body;
+      const pair = await storage.createBuddyPair(mentorId, menteeId, taskType);
+      return res.status(201).json(pair);
+    } catch (error) {
+      return handleErrors(res, error);
+    }
+  });
+
+  app.get('/api/buddy-pairs', async (req, res) => {
+    try {
+      const pairs = await storage.getBuddyPairs();
+      return res.json(pairs);
+    } catch (error) {
+      return handleErrors(res, error);
+    }
+  });
+
   return httpServer;
 }
