@@ -221,7 +221,11 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="mb-8">
+  <h2 className="text-2xl font-bold mb-4">User Feedback Analysis</h2>
+  <FeedbackVisualization />
+</div>
+<div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Dashboard Preview Cards */}
             <div className="bg-white overflow-hidden shadow rounded-lg">
               <div className="px-4 py-5 sm:p-6">
