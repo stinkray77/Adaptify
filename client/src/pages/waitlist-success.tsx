@@ -22,7 +22,7 @@ const WaitlistSuccess = () => {
             <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
             <h1 className="text-2xl font-bold text-neutral mb-2">You're on the list!</h1>
             <p className="text-gray-600 mb-6">
-              Thank you for joining our waitlist. We'll notify you as soon as InsightAdopt is ready for early access.
+              Thank you for joining our waitlist. We'll notify you as soon as Adaptify is ready for early access.
             </p>
             
             <div className="space-y-4 w-full">

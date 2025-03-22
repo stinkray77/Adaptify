@@ -226,7 +226,19 @@ const Home = () => {
   <h2 className="text-2xl font-bold mb-4">User Feedback Analysis</h2>
   <FeedbackVisualization />
 </div>
-<div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
+<div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-4">
+            {/* Buddy System Feature */}
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="px-4 py-5 sm:p-6">
+                <h3 className="text-lg font-medium text-neutral mb-4">Buddy System</h3>
+                <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Users className="h-24 w-24 text-primary" />
+                </div>
+                <p className="mt-4 text-sm text-gray-500">
+                  Connect experienced users with newcomers to facilitate smoother technology adoption through peer learning and support.
+                </p>
+              </div>
+            </div>
             {/* Dashboard Preview Cards */}
             <div className="bg-white overflow-hidden shadow rounded-lg">
               <div className="px-4 py-5 sm:p-6">
@@ -350,7 +362,7 @@ const Home = () => {
               Be the first to know when we launch
             </h2>
             <p className="mt-4 text-lg text-gray-500">
-              Join our waitlist to get early access and exclusive launch offers. No spam, just important updates about InsightAdopt.
+              Join our waitlist to get early access and exclusive launch offers. No spam, just important updates about Adaptify.
             </p>
             <WaitlistForm />
             <p className="mt-3 text-sm text-gray-500">
