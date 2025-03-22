@@ -323,6 +323,12 @@ export class MemStorage implements IStorage {
   }
 
   async getBuddyPairs(): Promise<BuddyPair[]> {
+    // Add some sample data if empty
+    if (this.buddyPairs.size === 0) {
+      this.createBuddyPair(1, 2, "JavaScript");
+      this.createBuddyPair(3, 4, "Python");
+      this.createBuddyPair(5, 6, "React");
+    }
     return Array.from(this.buddyPairs.values());
   }
 
