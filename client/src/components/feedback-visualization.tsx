@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Chart as ChartJS,
@@ -20,20 +21,18 @@ ChartJS.register(
 );
 
 const feedbackQuestions = [
-  'CNC Milling Machine Operation',
-  'CNC Milling Efficiency',
-  'AMR Operation',
-  'AMR Efficiency',
-  '3D Metal Printer Setup'
+  'Easy To Use',
+  'Improves Workflow',
+  'Changes are Reliable'
 ];
 
 const feedbackData = [
-  [4, 3, 5, 2, 4],
-  [3, 2, 2, 3, 3],
-  [5, 5, 5, 5, 5],
-  [1, 2, 2, 3, 1],
-  [4, 3, 4, 5, 5],
-  [3, 4, 5, 1, 5]
+  [4, 4, 5],
+  [3, 5, 4],
+  [5, 4, 5],
+  [4, 3, 4],
+  [5, 5, 4],
+  [4, 4, 5]
 ];
 
 export function FeedbackVisualization() {
@@ -59,7 +58,7 @@ export function FeedbackVisualization() {
       legend: { position: 'top' as const },
       title: { 
         display: true, 
-        text: 'Manufacturing Equipment User Feedback' 
+        text: 'User Experience Feedback' 
       }
     },
     scales: {
