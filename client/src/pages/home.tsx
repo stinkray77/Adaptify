@@ -6,7 +6,7 @@ import FeatureCard from "@/components/feature-card";
 import TestimonialCard from "@/components/testimonial-card";
 import PricingCard from "@/components/pricing-card";
 import { Button } from "@/components/ui/button";
-import { BarChart, GraduationCap, AlertTriangle, PieChart, Lightbulb, Shield } from "lucide-react";
+import { BarChart, GraduationCap, AlertTriangle, PieChart, Lightbulb, Shield, Users } from "lucide-react";
 import BuddySystem from "@/components/buddy-system"; // Import the new component
 import { FeedbackVisualization } from '../components/feedback-visualization'; // Added import
 
