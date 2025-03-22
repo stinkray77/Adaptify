@@ -48,11 +48,9 @@ const Dashboard = () => {
 
     // Sample data for the activity chart (in a real app, this would come from the API)
     return [
-      { name: "Dashboard", successful: 250, failed: 30 },
-      { name: "Reports", successful: 180, failed: 40 },
-      { name: "Configuration", successful: 120, failed: 60 },
-      { name: "Search", successful: 200, failed: 20 },
-      { name: "Export", successful: 150, failed: 35 }
+      { name: "Step 1", successful: 170, failed: 100 },
+      { name: "Step 2", successful: 180, failed: 40 },
+      { name: "Step 3", successful: 120, failed: 60 },
     ];
   };
 

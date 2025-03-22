@@ -62,9 +62,10 @@ app.use((req, res, next) => {
   const port = 5000;
   server.listen({
     port,
-    host: "0.0.0.0",
-    reusePort: true,
+    host: "localhost", // Changed from "0.0.0.0" to "localhost"
+    // Remove reusePort: true as it might not be supported on macOS
   }, () => {
     log(`serving on port ${port}`);
   });
 })();
+
